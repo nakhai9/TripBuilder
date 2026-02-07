@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { Viewport } from "next";
 import "./globals.css";
-import Modal from "./components/Modal";
+import { useGlobalStore } from "./store/global-store";
+import MainLayout from "./ui/layout/MainLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const open = false;
   return (
     <html lang="en">
       <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -37,8 +37,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
-        {open && <Modal />}
+        <MainLayout>{children}</MainLayout>
       </body>
     </html>
   );

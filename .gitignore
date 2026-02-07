@@ -1,0 +1,9 @@
+# node_modules ở mọi nơi
+node_modules/
+**/node_modules/
+
+# env files ở mọi nơi
+.env
+.env.*
+**/.env
+**/.env.*

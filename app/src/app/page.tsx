@@ -9,6 +9,8 @@ import { LocationInfo } from "./model";
 import { useVietnamMapStore } from "./store/vietnam-map-store";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
+import SocialShare from "./components/SocialShare";
+import { useGlobalStore } from "./store/global-store";
 
 export default function Home() {
   const [location, setLocation] = React.useState<LocationInfo | null>(null);
@@ -18,13 +20,15 @@ export default function Home() {
   const [open, setOpen] = React.useState(false);
   const [url, setUrl] = React.useState("https://example.com");
   const [isViewDetails, setIsViewDetails] = React.useState(false);
+  const [modalName, setModalName] = React.useState<string | null>(null);
   const router = useRouter();
+  const { setIsLoading, setConfiguration } = useGlobalStore();
 
   const { switchToMap, setVisitedLocations, loading, currentMap, isNewMap } =
     useVietnamMapStore();
 
   const handleChooseLocation = (location: LocationInfo) => {
-    setOpen(true);
+    openMarkModal();
     setLocation(location);
   };
 
@@ -56,7 +60,10 @@ export default function Home() {
   const uploadImages = async () => {
     const svgElement = document.getElementById("vietnam-map-svg");
 
-    if (!svgElement) return;
+    if (!svgElement) {
+      alert("Không tìm thấy bản đồ SVG");
+      return;
+    }
 
     const clone = svgElement.cloneNode(true) as SVGSVGElement;
 
@@ -69,16 +76,28 @@ export default function Home() {
     const formData = new FormData();
     formData.append("file", blob, "vietnam-map.svg");
 
-    const res = await fetch("http://localhost:4200/api/upload", {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL || "", {
       method: "POST",
       body: formData,
     });
 
     const data = await res.json();
     setUrl(data.data.secure_url);
+    setIsLoading(false);
   };
 
-  const onShare = () => {};
+  const onShareModal = async () => {
+    setIsLoading(true);
+    setConfiguration({ description: "Đang tạo hình ảnh để chia sẻ" });
+    await uploadImages();
+    setModalName("share-modal");
+    setOpen(true);
+  };
+
+  const openMarkModal = () => {
+    setModalName("mark-modal");
+    setOpen(true);
+  };
 
   const viewDetails = () => {
     router.push(`/details`);
@@ -124,7 +143,7 @@ export default function Home() {
                 </Tooltip>
                 <Tooltip title="Tạo hình ảnh để chia sẻ">
                   <button
-                    onClick={uploadImages}
+                    onClick={onShareModal}
                     className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-10 text-white text-xs md:text-sm cursor-pointer"
                   >
                     <Share2 /> Chia sẻ hành trình này
@@ -163,52 +182,56 @@ export default function Home() {
       </main>
 
       <Dialog open={open} keepMounted>
-        <button
-          className="cursor-pointer"
-          onClick={() => setOpen(false)}
-          style={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-          }}
-        >
-          <X />
-        </button>
-        <div className="p-5 min-w-56">
-          <div className="mb-4 font-medium text-lg text-center">
-            {location?.name ?? "-"}
-          </div>
-          <div className="flex justify-around gap-4">
-            <button
-              onClick={() => pinLocation(location as LocationInfo)}
-              className={clsx(
-                `flex flex-col justify-center items-center gap-2 cursor-pointer`,
-                hasVisited(location?.codeName as string)
-                  ? "text-[#FE9A00]"
-                  : "",
-              )}
-            >
-              <Flag />
-              <p>Đã đến</p>
-            </button>
-            <button
-              onClick={() => unpinLocation(location as LocationInfo)}
-              className="flex flex-col justify-center items-center gap-2 cursor-pointer"
-            >
-              <PinOff />
-              <p>Tháo ghim</p>
-            </button>
-            <button
-              onClick={() => setOpen(false)}
-              className="hidden flex flex-col justify-center items-center gap-2 cursor-pointer"
-            >
-              <Footprints />
-              <p>Sắp đến</p>
-            </button>
-          </div>
+        <div className="flex justify-between items-center p-5 dialog-header">
+          <h3 className="font-medium text-lg">
+            {modalName === "mark-modal" ? "Địa điểm" : "Chia sẻ hành trình"}
+          </h3>
+          <button
+            className="text-gray-600 cursor-pointer"
+            onClick={() => setOpen(false)}
+          >
+            <X />
+          </button>
         </div>
+        <div className="p-5 min-w-56">
+          {modalName === "mark-modal" && (
+            <>
+              <div className="mb-4 font-medium text-lg text-center">
+                {location?.name ?? "-"}
+              </div>
+              <div className="flex justify-around gap-4">
+                <button
+                  onClick={() => pinLocation(location as LocationInfo)}
+                  className={clsx(
+                    `flex flex-col justify-center items-center gap-2 cursor-pointer`,
+                    hasVisited(location?.codeName as string)
+                      ? "text-[#FE9A00]"
+                      : "",
+                  )}
+                >
+                  <Flag />
+                  <p>Đã đến</p>
+                </button>
+                <button
+                  onClick={() => unpinLocation(location as LocationInfo)}
+                  className="flex flex-col justify-center items-center gap-2 cursor-pointer"
+                >
+                  <PinOff />
+                  <p>Tháo ghim</p>
+                </button>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="hidden flex flex-col justify-center items-center gap-2 cursor-pointer"
+                >
+                  <Footprints />
+                  <p>Sắp đến</p>
+                </button>
+              </div>
+            </>
+          )}
 
-        {/* <SocialShare url={url} /> */}
+          {modalName === "share-modal" && <SocialShare url={url} />}
+        </div>
       </Dialog>
     </div>
   );

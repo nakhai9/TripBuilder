@@ -56,11 +56,16 @@ export default function VietnamMap({
 
   return (
     <div className="relative">
-      <div id="vietnam-map" className="flex justify-center" ref={wrapperRef}>
+      <div
+        id="vietnam-map-wrapper"
+        className="flex justify-center"
+        ref={wrapperRef}
+      >
         <svg
           viewBox="0 0 800 800"
           className="w-[500px] sm:w-[400px] md:w-[600px] h-[500px] sm:h-[400px] md:h-[600px] select-none"
           xmlns="http://www.w3.org/2000/svg"
+          id="vietnam-map-svg"
         >
           <g className="group-state">
             {currentMap.map((item: LocationModel) => (
