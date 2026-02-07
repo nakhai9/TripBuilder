@@ -6,8 +6,8 @@ import { useVietnamMapStore } from "../store/vietnam-map-store";
 import useMousePosition from "../hooks/useMousePosition";
 
 type VietnamMapProps = {
-  locationId?: number | null;
   locationIds?: string[];
+  locations?: LocationInfo[];
   onClick?: (location: LocationInfo) => void;
   zoomToElement?: (
     node: string | HTMLElement,
@@ -32,8 +32,8 @@ type VietnamMapProps = {
 };
 
 export default function VietnamMap({
-  locationId = null,
   locationIds = [],
+  locations = [],
   onClick,
   zoomToElement,
 }: VietnamMapProps) {
@@ -48,10 +48,12 @@ export default function VietnamMap({
   });
 
   const handleClick = (item: LocationModel) => {
-    onClick?.({
-      codeName: item.codeName,
-      name: item.name,
-    });
+    if (item.codeName)
+      onClick?.({
+        codeName: item.codeName,
+        name: item.name,
+        status: locations.find((loc) => loc.codeName === item.codeName)?.status,
+      });
   };
 
   return (
@@ -73,9 +75,19 @@ export default function VietnamMap({
                 key={item.codeName}
                 dangerouslySetInnerHTML={{ __html: item.svgData }}
                 fill={
-                  locationIds.some((id) => id === item.codeName)
-                    ? "#bb4d00"
-                    : "#FE9A00"
+                  locations.some(
+                    (location) =>
+                      location.codeName === item.codeName &&
+                      location.status === "VISITED",
+                  )
+                    ? "#BB4D00"
+                    : locations.some(
+                          (location) =>
+                            location.codeName === item.codeName &&
+                            location.status === "UPCOMING",
+                        )
+                      ? "#836FFF"
+                      : "#FE9A00"
                 }
                 style={{ cursor: "pointer" }}
                 onClick={() => handleClick(item)}

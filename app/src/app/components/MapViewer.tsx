@@ -6,14 +6,12 @@ import { ArrowRightLeft } from "lucide-react";
 import { CircularProgress } from "@mui/material";
 
 type MapViewerProps = {
-  locationIds?: string[];
-  loading?: boolean;
+  locations: LocationInfo[];
   onChoose?: (location: LocationInfo) => void;
 };
 
 export default function MapViewer({
-  locationIds = [],
-  loading = false,
+  locations = [],
   onChoose,
 }: MapViewerProps) {
   const handleChooseProvince = (location: LocationInfo) => {
@@ -53,7 +51,7 @@ export default function MapViewer({
       </TransformWrapper> */}
 
       <VietnamMap
-        locationIds={locationIds}
+        locations={locations}
         onClick={(location) => handleChooseProvince(location)}
       />
     </div>

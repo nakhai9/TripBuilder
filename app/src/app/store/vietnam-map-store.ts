@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { OLD_VIETNAM_MAP } from "../data/old-vietnam-map";
 import { NEW_VIETNAM_MAP } from "../data/new-vietnam-map";
+import { LocationInfo } from "../model";
 
 type VietnamMapStore = {
   isNewMap: boolean;
@@ -8,9 +9,10 @@ type VietnamMapStore = {
   map: any;
   currentMap: any;
   // visited locations
-  visitedLocations?: string[];
+  selectedLocations: LocationInfo[];
   switchToMap: () => void;
-  setVisitedLocations: (locations: string[]) => void;
+  updateSelectedLocations: (location: LocationInfo) => void;
+  resetMap: () => void;
 };
 
 export const useVietnamMapStore = create<VietnamMapStore>((set) => ({
@@ -27,15 +29,44 @@ export const useVietnamMapStore = create<VietnamMapStore>((set) => ({
     },
   },
   currentMap: NEW_VIETNAM_MAP,
+  selectedLocations: [],
   switchToMap: () =>
     set((state) => ({
       loading: true,
       isNewMap: !state.isNewMap,
       currentMap: state.isNewMap ? state.map.old.data : state.map.new.data,
     })),
+  updateSelectedLocations: (location: LocationInfo) =>
+    set((state) => {
+      console.log("Updating location:", location);
+      const existingLoc = state.selectedLocations.find(
+        (x) => x.codeName === location.codeName,
+      );
 
-  setVisitedLocations: (locations: string[]) =>
+      if (!existingLoc) {
+        return {
+          selectedLocations: [...state.selectedLocations, location],
+        };
+      }
+
+      if (existingLoc && location.status === "NOT_VISITED") {
+        return {
+          selectedLocations: [
+            ...state.selectedLocations.filter(
+              (x) => x.codeName !== location.codeName,
+            ),
+          ],
+        };
+      }
+
+      return {
+        selectedLocations: [...state.selectedLocations],
+      };
+    }),
+  resetMap: () =>
     set(() => ({
-      visitedLocations: locations,
+      isNewMap: false,
+      currentMap: NEW_VIETNAM_MAP,
+      selectedLocations: [],
     })),
 }));
