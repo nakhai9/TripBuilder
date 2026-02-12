@@ -225,11 +225,11 @@ export default function Home() {
 
       <Dialog open={open} keepMounted>
         <div className="flex justify-between items-center p-5 dialog-header">
-          <h3 className="font-medium text-lg">
+          <h3 className="font-medium md:text-lg">
             {modalName === "mark-modal" ? "Địa điểm" : "Chia sẻ hành trình"}
           </h3>
           <button
-            className="text-gray-600 cursor-pointer"
+            className="text-gray-700 cursor-pointer"
             onClick={() => setOpen(false)}
           >
             <X />

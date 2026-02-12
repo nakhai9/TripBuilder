@@ -11,13 +11,13 @@ export default function SocialShare({
   url = "https://example.com",
 }: SocialShareProps) {
   return (
-    <div className="w-90">
+    <div className="w-full">
       <div className="flex justify-center item-center">
-        <img src={url} alt="Share Image" width={300} height={200} />
+        <img src={url} alt="Share Image" className="w-full" height={200} />
       </div>
 
       <div className="flex items-center gap-2 mb-3">
-        <p className="mb-1 text-gray-600 text-sm">Chia sẻ</p>
+        <p className="mb-1 text-gray-700 text-sm">Chia sẻ</p>
 
         <FacebookShareButton url={url} hashtag="#vietnammapchecked">
           <FacebookIcon size={32} round />
@@ -31,8 +31,8 @@ export default function SocialShare({
          */}
       </div>
 
-      <div className="">
-        <p className="mb-1 text-gray-600 text-sm">
+      <div className="w-full">
+        <p className="mb-1 text-gray-700 text-xs md:text-sm">
           Hoặc chép đường dẫn này gửi bất cứ ai cũng có thể xem hành trình của
           bạn
         </p>

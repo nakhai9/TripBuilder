@@ -100,7 +100,7 @@ export default function VietnamMap({
       </div>
       <div
         id="state-tooltip"
-        className="z-50 fixed text-sm pointer-events-none"
+        className="hidden md:block z-50 fixed text-sm pointer-events-none"
         style={{
           position: "fixed",
           display: text ? "block" : "none",
