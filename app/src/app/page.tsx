@@ -186,18 +186,18 @@ export default function Home() {
                   Xem chi tiết
                 </button>
               </Tooltip>
-              /* {selectedLocations.filter((x) => x.status === "UPCOMING").length >
+              {selectedLocations.filter((x) => x.status === "UPCOMING").length >
                 0 && (
                 <Tooltip title="Tạo lịch trình">
                   <button
                     onClick={navigateToCreateTravelPlan}
-                    className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
+                    className="hidden items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
                   >
                     <MapPinned className="w-4 md:w-5 h-4 md:h-5" /> Tạo lịch
                     trình
                   </button>
                 </Tooltip>
-              )} */
+              )}
               <Tooltip title="Tạo hình ảnh để chia sẻ">
                 <button
                   onClick={onShareModal}
