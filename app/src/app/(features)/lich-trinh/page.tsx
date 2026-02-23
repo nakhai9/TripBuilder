@@ -12,7 +12,15 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import { Bot, CirclePlus, MapPin, Trash, Trash2, X } from "lucide-react";
+import {
+  Bot,
+  CirclePlus,
+  Lightbulb,
+  MapPin,
+  Trash,
+  Trash2,
+  X,
+} from "lucide-react";
 
 import { useVietnamMapStore } from "@/app/store/vietnam-map-store";
 import MainLayout from "@/app/ui/layout/MainLayout";
@@ -301,7 +309,8 @@ export default function TravelPlan() {
                     className="flex items-center gap-1 px-4 border border-amber-600 rounded-md h-8 md:h-10 text-amber-600 text-xs md:text-sm cursor-pointer"
                     onClick={askGeminiToCreatePlan}
                   >
-                    Gợi ý bởi <Bot />
+                    <Lightbulb className="w-3 md:w-4 h-3 md:h-4" />
+                    Gợi ý bởi Google Gemini
                   </button>
                 </Tooltip>
               </div>
