@@ -149,12 +149,15 @@ export default function DestinationItem({
                 {destination.activities?.map((a) => {
                   return (
                     <li key={a} className="ml-5 text-xs md:text-sm">
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 w-full">
                         <p>{a}</p>
                         <button
                           type="button"
                           onClick={() => handleDeleteActivities(a)}
-                          className="flex items-center"
+                          className={clsx(
+                            "flex items-center",
+                            readonly && "hidden",
+                          )}
                         >
                           <X className="w-3 h-3 font-bold text-red-500" />
                         </button>
