@@ -241,33 +241,38 @@ export default function TravelPlan() {
             <label htmlFor="" className="block mb-2 text-xl text-center">
               Những nơi bạn muốn ghé đến
             </label>
-            <div>
-              {provinces
-                .filter((p) => !p.isMerged)
-                .map((p) => (
-                  <Chip
-                    key={p.id}
-                    label={p.name || ""}
-                    className={clsx(
-                      "!mr-2 !mb-2 !text-xs !md:text-sm",
-                      selectedLocations.some(
-                        (loc) => loc.codeName === p.codeName,
-                      )
-                        ? "!text-white !bg-[#836FFF] "
-                        : "",
-                    )}
-                    onClick={() => {
-                      updateSelectedLocations({
-                        codeName: p.codeName,
-                        name: p.name,
-                        status: "UPCOMING",
-                      });
+            {!provinces.length ? (
+              <span>Không có dữ liệu điểm đến</span>
+            ) : (
+              <div>
+                {provinces
+                  .filter((p) => !p.isMerged)
+                  .map((p) => (
+                    <Chip
+                      key={p.id}
+                      label={p.name || ""}
+                      className={clsx(
+                        "!mr-2 !mb-2 !text-xs !md:text-sm",
+                        selectedLocations.some(
+                          (loc) => loc.codeName === p.codeName,
+                        )
+                          ? "!text-white !bg-[#836FFF] "
+                          : "",
+                      )}
+                      onClick={() => {
+                        updateSelectedLocations({
+                          codeName: p.codeName,
+                          name: p.name,
+                          status: "UPCOMING",
+                        });
 
-                      updateDestinationInPlan();
-                    }}
-                  />
-                ))}
-            </div>
+                        updateDestinationInPlan();
+                      }}
+                    />
+                  ))}
+              </div>
+            )}
+
             {!!selectedLocations.length && plan?.title && (
               <div className="flex justify-end">
                 <button
@@ -302,7 +307,7 @@ export default function TravelPlan() {
               </div>
             )}
 
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-3 mt-3">
               {plan?.destinations.map((destination) => (
                 <DestinationItem
                   key={destination.codeName}
@@ -315,7 +320,7 @@ export default function TravelPlan() {
             </div>
 
             {!!plan?.destinations.length && (
-              <div className="flex justify-end mb-4">
+              <div className="flex justify-end my-3">
                 <Tooltip title="Tạo lịch trình">
                   <button
                     type="button"

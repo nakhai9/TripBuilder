@@ -1,3 +1,5 @@
+import { Destination } from "./components/Destination";
+
 export type LocationInfo = {
   name: string;
   codeName: string;
@@ -17,4 +19,14 @@ export type Province = {
   name: string;
   mergedInto: string;
   isMerged?: boolean;
+};
+
+export type PlanDetails = {
+  id?: string;
+  destinations: Destination[];
+  title: string;
+  startAt: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
 };

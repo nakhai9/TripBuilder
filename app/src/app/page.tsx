@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import MainLayout from "./ui/layout/MainLayout";
-import { useGlobalStore, useToast } from "./store/global-store";
+import { useToast } from "./store/global-store";
 
 export default function Home() {
   const router = useRouter();
@@ -40,7 +40,7 @@ export default function Home() {
             onClick={() => navigateToPage("/chia-se-hinh-anh")}
             className="flex justify-center items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm text-center cursor-pointer"
           >
-            Bắt đàu
+            Bắt đầu
           </button>
         </div>
         <div></div>
