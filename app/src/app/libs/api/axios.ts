@@ -56,16 +56,23 @@ async function handleRequest<T, D = unknown>(
 }
 
 export const HttpClient = {
-  get: async <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
+  get: async <T>(
+    url: string,
+    query?: Record<string, any>,
+    config?: AxiosRequestConfig,
+  ): Promise<T> => {
     return handleRequest<T>({
       ...config,
       method: "GET",
       url,
+      params: query,
     });
   },
+
   post: async <T, D = unknown>(
     url: string,
     payload?: D,
+    query?: Record<string, any>,
     config?: AxiosRequestConfig<D>,
   ): Promise<T> => {
     return handleRequest<T, D>({
@@ -73,11 +80,14 @@ export const HttpClient = {
       method: "POST",
       url,
       data: payload,
+      params: query,
     });
   },
+
   update: async <T, D = unknown>(
     url: string,
     payload?: D,
+    query?: Record<string, any>,
     config?: AxiosRequestConfig<D>,
   ): Promise<T> => {
     return handleRequest<T, D>({
@@ -85,13 +95,20 @@ export const HttpClient = {
       method: "PUT",
       url,
       data: payload,
+      params: query,
     });
   },
-  delete: async <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
+
+  delete: async <T>(
+    url: string,
+    query?: Record<string, any>,
+    config?: AxiosRequestConfig,
+  ): Promise<T> => {
     return handleRequest<T>({
       ...config,
       method: "DELETE",
       url,
+      params: query,
     });
   },
 };

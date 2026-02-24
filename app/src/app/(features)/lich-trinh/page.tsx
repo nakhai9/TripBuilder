@@ -51,8 +51,13 @@ type Plan = {
 
 export default function TravelPlan() {
   const router = useRouter();
-  const { selectedLocations, updateSelectedLocations, resetMap } =
-    useVietnamMapStore();
+  const {
+    selectedLocations,
+    updateSelectedLocations,
+    resetMap,
+    isNewMap,
+    switchToMap,
+  } = useVietnamMapStore();
   const { setIsLoading } = useGlobalStore();
   const { showError } = useToast();
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -123,14 +128,16 @@ export default function TravelPlan() {
   const fetchProvinces = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await HttpClient.get<Province[]>(API_URLS.provinces);
-      setProvinces(data);
+      const provinces = await HttpClient.get<Province[]>(
+        `${API_URLS.provinces}${isNewMap ? "?type=new" : "?type=old"}`,
+      );
+      setProvinces(provinces);
     } catch (error) {
-      showError("Lỗi");
+      showError("Lỗi: Không thể tải dữ liệu");
     } finally {
       setIsLoading(false);
     }
-  }, [currentStep]);
+  }, [currentStep, isNewMap]);
 
   useEffect(() => {
     if (!plan) {
@@ -252,31 +259,29 @@ export default function TravelPlan() {
               <span>Không có dữ liệu điểm đến</span>
             ) : (
               <div>
-                {provinces
-                  .filter((p) => !p.isMerged)
-                  .map((p) => (
-                    <Chip
-                      key={p.id}
-                      label={p.name || ""}
-                      className={clsx(
-                        "!mr-2 !mb-2 !text-xs !md:text-sm",
-                        selectedLocations.some(
-                          (loc) => loc.codeName === p.codeName,
-                        )
-                          ? "!text-white !bg-[#836FFF] "
-                          : "",
-                      )}
-                      onClick={() => {
-                        updateSelectedLocations({
-                          codeName: p.codeName,
-                          name: p.name,
-                          status: "UPCOMING",
-                        });
+                {provinces.map((p) => (
+                  <Chip
+                    key={p.id}
+                    label={p.name || ""}
+                    className={clsx(
+                      "!mr-2 !mb-2 !text-xs !md:text-sm",
+                      selectedLocations.some(
+                        (loc) => loc.codeName === p.codeName,
+                      )
+                        ? "!text-white !bg-[#836FFF] "
+                        : "",
+                    )}
+                    onClick={() => {
+                      updateSelectedLocations({
+                        codeName: p.codeName,
+                        name: p.name,
+                        status: "UPCOMING",
+                      });
 
-                        updateDestinationInPlan();
-                      }}
-                    />
-                  ))}
+                      updateDestinationInPlan();
+                    }}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -340,13 +345,24 @@ export default function TravelPlan() {
 
         <div className={clsx("flex justify-between items-center mt-2 actions")}>
           {currentStep === 2 && plan?.title && (
-            <button
-              type="button"
-              onClick={() => handleNextStep(1)}
-              className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
-            >
-              Quay lại
-            </button>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => handleNextStep(1)}
+                className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
+              >
+                Quay lại
+              </button>
+              {!selectedLocations.length && (
+                <button
+                  type="button"
+                  onClick={switchToMap}
+                  className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
+                >
+                  Danh sách {isNewMap ? 64 : 34} tỉnh/thành phố
+                </button>
+              )}
+            </div>
           )}
 
           {currentStep === 2 && !!selectedLocations.length && plan?.title && (

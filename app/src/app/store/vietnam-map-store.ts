@@ -16,7 +16,7 @@ type VietnamMapStore = {
 };
 
 export const useVietnamMapStore = create<VietnamMapStore>((set) => ({
-  isNewMap: false,
+  isNewMap: true,
   loading: false,
   map: {
     old: {

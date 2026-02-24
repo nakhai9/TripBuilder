@@ -13,16 +13,9 @@ export default function PlanDetailsPage({}: PlanDetailsProps) {
   const params = useParams();
   const id = params.id as string;
   const [qrCodeUrl, setQrCodeUrl] = useState("");
-  const { setIsLoading } = useGlobalStore();
+  const { setIsLoading, isLoading } = useGlobalStore();
   const { showError } = useToast();
   const [details, setDetails] = useState<PlanDetails | null>(null);
-
-  useEffect(() => {
-    if (id) {
-      initQRCode(id);
-    }
-    fetchPlanDetails();
-  }, [id]);
 
   const fetchPlanDetails = useCallback(async () => {
     setIsLoading(true);
@@ -47,37 +40,47 @@ export default function PlanDetailsPage({}: PlanDetailsProps) {
     setQrCodeUrl(url);
   };
 
+  useEffect(() => {
+    if (id) {
+      initQRCode(id);
+      fetchPlanDetails();
+    }
+  }, [id]);
+
   return (
     <MainLayout hideButton={true}>
-      <div className="mt-10 mt-20 md:p-0 px-4">
-        <div className="flex justify-between items-center">
-          <div>
-            <h4 className="font-bold text-amber-500 text-xl md:text-4xl">
-              {details ? details["title"] : "Hành trình"}
-            </h4>
-            <p className="text-gray-700 text-xs md:text-sm">
-              Hãy gởi bạn bè của bạn mã QR này để họ dễ dàng theo dõi lịch trình
-            </p>
+      {details && (
+        <div className="mt-10 mt-20 md:p-0 px-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h4 className="font-bold text-amber-500 text-xl md:text-4xl">
+                {details ? details["title"] : "Hành trình"}
+              </h4>
+              <p className="text-gray-700 text-xs md:text-sm">
+                Hãy gởi bạn bè của bạn mã QR này để họ dễ dàng theo dõi lịch
+                trình
+              </p>
+            </div>
+            {qrCodeUrl && (
+              <img
+                src={qrCodeUrl}
+                alt="qr"
+                className="w-16 w-16 md:w-30 md:h-30"
+              />
+            )}
           </div>
-          {qrCodeUrl && (
-            <img
-              src={qrCodeUrl}
-              alt="qr"
-              className="w-16 w-16 md:w-30 md:h-30"
-            />
-          )}
-        </div>
 
-        <div className="gap-2 grid md:grid-cols-3 mt-3">
-          {details?.destinations.map((destination) => (
-            <DestinationItem
-              key={destination.codeName}
-              destination={destination}
-              readonly={true}
-            />
-          ))}
+          <div className="gap-2 grid md:grid-cols-3 mt-3">
+            {details?.destinations.map((destination) => (
+              <DestinationItem
+                key={destination.codeName}
+                destination={destination}
+                readonly={true}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </MainLayout>
   );
 }

@@ -27,6 +27,7 @@ const create = async (req, res) => {
 const get = async (req, res) => {
     try {
         const { id } = req.params;
+        const { isMerged } = req.query;
         const plan = await PlanSchema.findById(id).lean();
 
         if (!plan) {

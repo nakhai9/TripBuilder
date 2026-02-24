@@ -3,7 +3,18 @@ const ProvinceSchema = require("./../models/province")
 
 const get = async (req, res) => {
     try {
-        const locations = await ProvinceSchema.find().lean();
+        const { type } = req.query;
+
+        let options = {};
+        
+        if(type === 'new') {
+            options = {
+                isMerged: true
+            }
+        }
+
+        const locations = await ProvinceSchema.find(options).lean();
+
         res.status(201).json(Response({
             code: "success",
             data: [...locations.map(x => ({ id: x._id, codeName: x.codeName, name: x.name, mergedInto: x.mergedInto, isMerged: x.isMerged }))],

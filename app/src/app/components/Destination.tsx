@@ -75,20 +75,7 @@ export default function DestinationItem({
       >
         <div className="flex justify-center items-center">
           <MapPin className="w-4 md:w-5 h-4 md:h-5 text-white" />
-          <select
-            onChange={(e) => handleSelectChange(e)}
-            defaultValue={destination.day}
-            disabled={readonly}
-            className={clsx(readonly && "hidden")}
-          >
-            {[1, 2, 3, 4, 5, 6, 7].map((opt) => (
-              <option key={opt} value={opt}>
-                Ngày {opt}
-              </option>
-            ))}
-          </select>
-
-          <div className="flex items-center gap-1 font-medium text-white text-xl">
+          <div className="flex items-center gap-1 font-medium text-white text-sm md:text-xl">
             <p>
               {destination.name}
               {readonly && (
@@ -96,6 +83,18 @@ export default function DestinationItem({
               )}
             </p>
           </div>
+          <select
+            onChange={(e) => handleSelectChange(e)}
+            defaultValue={destination.day}
+            disabled={readonly}
+            className={clsx(readonly && "hidden", "ml-2")}
+          >
+            {[1, 2, 3, 4, 5, 6, 7].map((opt) => (
+              <option key={opt} value={opt}>
+                Ngày {opt}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="flex gap-1 item-centers">
           <button
