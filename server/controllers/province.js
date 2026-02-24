@@ -9,7 +9,7 @@ const get = async (req, res) => {
         
         if(type === 'new') {
             options = {
-                isMerged: true
+                isMerged: false
             }
         }
 
