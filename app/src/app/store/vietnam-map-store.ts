@@ -10,9 +10,13 @@ type VietnamMapStore = {
   currentMap: any;
   // visited locations
   selectedLocations: LocationInfo[];
+  selectedLocationsToShare: LocationInfo[];
   switchToMap: () => void;
   updateSelectedLocations: (location: LocationInfo) => void;
+  updateSelectedLocationsToShare: (location: LocationInfo) => void;
   resetMap: () => void;
+  resetSelectedLocations: () => void;
+  resetSelectedLocationsToShare: () => void;
 };
 
 export const useVietnamMapStore = create<VietnamMapStore>((set) => ({
@@ -30,6 +34,7 @@ export const useVietnamMapStore = create<VietnamMapStore>((set) => ({
   },
   currentMap: NEW_VIETNAM_MAP,
   selectedLocations: [],
+  selectedLocationsToShare: [],
   switchToMap: () =>
     set((state) => ({
       loading: true,
@@ -67,5 +72,43 @@ export const useVietnamMapStore = create<VietnamMapStore>((set) => ({
       isNewMap: false,
       currentMap: NEW_VIETNAM_MAP,
       selectedLocations: [],
+      // selectedLocationsToShare: [],
+    })),
+  updateSelectedLocationsToShare: (location: LocationInfo) =>
+    set((state) => {
+      const existingLoc = state.selectedLocationsToShare.find(
+        (x) => x.codeName === location.codeName,
+      );
+
+      if (!existingLoc) {
+        return {
+          selectedLocationsToShare: [
+            ...state.selectedLocationsToShare,
+            location,
+          ],
+        };
+      }
+
+      if (existingLoc || location.status === "NOT_VISITED") {
+        return {
+          selectedLocationsToShare: [
+            ...state.selectedLocationsToShare.filter(
+              (x) => x.codeName !== location.codeName,
+            ),
+          ],
+        };
+      }
+
+      return {
+        selectedLocationsToShare: [...state.selectedLocationsToShare],
+      };
+    }),
+  resetSelectedLocations: () =>
+    set(() => ({
+      selectedLocations: [],
+    })),
+  resetSelectedLocationsToShare: () =>
+    set(() => ({
+      selectedLocationsToShare: [],
     })),
 }));

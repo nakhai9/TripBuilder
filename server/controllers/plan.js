@@ -9,7 +9,10 @@ const create = async (req, res) => {
             payload.title = "Lịch trình chưa đặt tên"
         }
 
-        const plan = await PlanSchema.create(payload);
+        const plan = await PlanSchema.create({
+            ...payload,
+            userId: payload.userId ? payload.userId : "69a411236ef8aea7d9e0e96c"
+        });
 
         res.status(201).json(Response({
             code: "success",
@@ -27,65 +30,64 @@ const create = async (req, res) => {
 const get = async (req, res) => {
     try {
         const { id } = req.params;
-        const payload = req.body;
+        const { accessCode } = req.body ?? {};
 
         const plan = await PlanSchema.findById(id).lean();
 
         if (!plan) {
             return res.status(404).json({
-                message: "Không tìm thấy lịch trình"
+                success: false,
+                message: "Không tìm thấy lịch trình",
             });
         }
 
-        const {_id, destinations, password,...rest} = plan;
+        const { _id, destinations, isPublic, accessCode: planAccessCode, ...rest } = plan;
 
-        if (payload?.password && password === payload.password) {
-            return res.status(201).json(Response({
-                code: "success",
+        if (isPublic) {
+            return res.status(200).json({
+                success: true,
                 data: {
                     id: _id,
-                    destinations: destinations.map(x => ({
-                        codeName: x.codeName,
-                        name: x.name,
-                        id: x._id,
-                        activities: x.activities,
-                        day: x.day
-                    })),
+                    destinations,
                     ...rest,
+                    canView: true,
                 },
-                message: ""
-            }));
-        } else {
-            if (!plan.isPublic) {
-                return res.status(201).json(Response({
-                    code: "success",
-                    data: {
-                        // id: _id, // không return id khi đang ở chế độ riêng tư mà ko có mật khẩu
-                        isPubic: plan.isPublic
-                    },
-                    message: "Lịch trình riêng tư"
-                }))
-            }
-
-            return res.status(201).json(Response({
-                code: "success",
-                data: {
-                    id: _id,
-                    destinations: destinations.map(x => ({
-                        codeName: x.codeName,
-                        name: x.name,
-                        id: x._id,
-                        activities: x.activities,
-                        day: x.day
-                    })),
-                    ...rest,
-                },
-                message: ""
-            }));
+            });
         }
+
+        if (!accessCode) {
+            return res.status(200).json({
+                success: true,
+                data: { canView: false },
+                message: "Lịch trình riêng tư",
+            });
+        }
+
+        if (planAccessCode !== accessCode) {
+            return res.status(403).json({
+                success: false,
+                data: { canView: false },
+                message: "Mã bảo vệ không hợp lệ",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                id: _id,
+                destinations,
+                ...rest,
+                canView: true,
+            },
+        });
+
     } catch (error) {
-        res.status(500).json({ message: "Lỗi hệ thống", error: error.message });
+        return res.status(500).json({
+            success: false,
+            message: "Lỗi hệ thống",
+            error: error.message,
+        });
     }
-}
+};
 
 module.exports = { create, get }

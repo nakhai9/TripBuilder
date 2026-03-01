@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { CirclePlus, MapPin, Pencil, Trash, Trash2, X } from "lucide-react";
 import { useState } from "react";
+import { useToast } from "../store/global-store";
 
 export type Destination = {
   id?: string;
@@ -29,6 +30,8 @@ export default function DestinationItem({
 }: DestinationItemProps) {
   const [activity, setActivity] = useState<string>("");
 
+  const { showError } = useToast();
+
   const handleSelectChange = (e: any) => {
     onSelectChange?.({
       ...destination,
@@ -37,6 +40,10 @@ export default function DestinationItem({
   };
 
   const handleAddActivity = () => {
+    if (!activity) {
+      showError("Trường không được để trống");
+      return;
+    }
     setActivity("");
     onActivityChange?.({
       ...destination,
@@ -145,9 +152,12 @@ export default function DestinationItem({
                 Hoạt động, điểm than quan
               </p>
               <ul className="marker:text-amber-600 list-disc">
-                {destination.activities?.map((a) => {
+                {destination.activities?.map((a, index) => {
                   return (
-                    <li key={a} className="ml-5 text-xs md:text-sm">
+                    <li
+                      key={a + ":idx=" + index}
+                      className="ml-5 text-xs md:text-sm"
+                    >
                       <div className="flex items-center gap-1 w-full">
                         <p>{a}</p>
                         <button

@@ -18,7 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function ChiaSeHinhAnh() {
   const [location, setLocation] = React.useState<LocationInfo | null>(null);
@@ -29,8 +29,11 @@ export default function ChiaSeHinhAnh() {
   const { setIsLoading } = useGlobalStore();
   const { showError, showInfo } = useToast();
 
-  const { updateSelectedLocations, resetMap, currentMap, selectedLocations } =
-    useVietnamMapStore();
+  const {
+    updateSelectedLocationsToShare,
+    selectedLocationsToShare,
+    resetSelectedLocationsToShare,
+  } = useVietnamMapStore();
 
   const handleChooseLocation = (location: LocationInfo) => {
     openMarkModal();
@@ -39,7 +42,7 @@ export default function ChiaSeHinhAnh() {
 
   const pinLocation = (location: LocationInfo) => {
     setOpen(false);
-    updateSelectedLocations({
+    updateSelectedLocationsToShare({
       ...location,
       status: "VISITED",
     });
@@ -47,7 +50,7 @@ export default function ChiaSeHinhAnh() {
 
   const unpinLocation = (location: LocationInfo) => {
     setOpen(false);
-    updateSelectedLocations({
+    updateSelectedLocationsToShare({
       ...location,
       status: "NOT_VISITED",
     });
@@ -100,13 +103,9 @@ export default function ChiaSeHinhAnh() {
     setOpen(true);
   };
 
-  const viewDetails = () => {
-    router.push(`/details`);
-  };
-
   const handleMarkUpcoming = (location: LocationInfo) => {
     setOpen(false);
-    updateSelectedLocations({
+    updateSelectedLocationsToShare({
       ...location,
       status: "UPCOMING",
     });
@@ -117,12 +116,16 @@ export default function ChiaSeHinhAnh() {
     router.push(url);
   };
 
+  useEffect(() => {
+    resetSelectedLocationsToShare();
+  }, []);
+
   return (
     <MainLayout hideButton={false}>
       <div className="mt-20 md:p-0 px-4">
         <div className="flex justify-end items-center gap-2">
-          {selectedLocations.filter((x) => x.status === "UPCOMING").length >
-            0 && (
+          {selectedLocationsToShare.filter((x) => x.status === "UPCOMING")
+            .length > 0 && (
             <Tooltip title="Tạo lịch trình">
               <button
                 onClick={() => navigateToPage("/lich-trinh")}
@@ -132,7 +135,7 @@ export default function ChiaSeHinhAnh() {
               </button>
             </Tooltip>
           )}
-          {selectedLocations.length > 0 && (
+          {selectedLocationsToShare.length > 0 && (
             <>
               <Tooltip title="Tạo hình ảnh để chia sẻ">
                 <button
@@ -145,7 +148,7 @@ export default function ChiaSeHinhAnh() {
               </Tooltip>
               <Tooltip title="Khôi phục">
                 <button
-                  onClick={resetMap}
+                  onClick={resetSelectedLocationsToShare}
                   className="flex items-center gap-2 bg-white hover:bg-amber-50 px-4 border border-amber-500 rounded-md h-8 md:h-10 text-amber-500 hover:text-amber-600 text-xs md:text-sm cursor-pointer icon"
                 >
                   <RotateCw className="w-4 md:w-5 h-4 md:h-5" />
@@ -155,7 +158,7 @@ export default function ChiaSeHinhAnh() {
           )}
         </div>
         <MapViewer
-          locations={selectedLocations}
+          locations={selectedLocationsToShare}
           onChoose={(location) => handleChooseLocation(location)}
         />
       </div>

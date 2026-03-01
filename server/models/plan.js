@@ -27,10 +27,13 @@ const PlanSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    password: {
+    accessCode: {
         type: String,
         default: null
     },
+    userId: {
+        type:String
+    }
 }, {
     versionKey: false,
     timestamps: true

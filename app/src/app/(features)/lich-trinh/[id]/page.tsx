@@ -17,23 +17,21 @@ export default function PlanDetailsPage({}: PlanDetailsProps) {
   const { setIsLoading, isLoading } = useGlobalStore();
   const { showError } = useToast();
   const [details, setDetails] = useState<PlanDetails | null>(null);
-  const [passcode, setPasscode] = useState<string>("");
-  const [canView, setCanView] = useState<boolean>(true);
+  const [accessCode, setAccessCode] = useState<string>("");
 
   const fetchPlanDetails = useCallback(
-    async (passcode?: string) => {
+    async (accessCode?: string) => {
       setIsLoading(true);
       try {
         const details = await HttpClient.post<PlanDetails>(
           `${API_URLS.plan}/${id}`,
-          passcode && {
-            password: passcode,
+          accessCode && {
+            accessCode: accessCode,
           },
         );
         setDetails(details);
-        setCanView(details.id ? true : false);
-      } catch (error) {
-        showError("Không thể tải dữ liệu");
+      } catch (error: any) {
+        showError(error || "Không thể tải dữ liệu");
       } finally {
         setIsLoading(false);
       }
@@ -53,17 +51,17 @@ export default function PlanDetailsPage({}: PlanDetailsProps) {
   const onSubmit = async () => {
     setIsLoading(true);
     try {
-      if (!passcode.length) {
+      if (!accessCode.length) {
         showError("Bạn cần nhập mã bảo vệ khi chọn chế độ riêng tư");
         return;
       }
 
-      if (passcode.length < 6) {
+      if (accessCode.length < 6) {
         showError("Mã bảo vệ tối đa 6 kí tự");
         return;
       }
 
-      await fetchPlanDetails(passcode);
+      await fetchPlanDetails(accessCode);
     } catch (error) {
       showError("Thất bại");
     } finally {
@@ -71,9 +69,9 @@ export default function PlanDetailsPage({}: PlanDetailsProps) {
     }
   };
 
-  const handlePasscodeChange = (e: any) => {
-    const passcode = (e.target as HTMLInputElement)?.value ?? "";
-    setPasscode(passcode);
+  const handleAccessCodeChange = (e: any) => {
+    const accessCode = (e.target as HTMLInputElement)?.value ?? "";
+    setAccessCode(accessCode);
   };
 
   useEffect(() => {
@@ -87,23 +85,23 @@ export default function PlanDetailsPage({}: PlanDetailsProps) {
     <MainLayout hideButton={true}>
       {details && (
         <div className="mt-10 mt-20 md:p-0 px-4">
-          {!canView && (
+          {!details.canView && (
             <div className="flex flex-col items-center gap-2 md:mx-auto w-full md:w-90">
               <p className="font-medium text-lg">Đây là lịch trình riêng tư</p>
               <div className="w-full">
                 <label
-                  htmlFor="#passcode"
+                  htmlFor="#accessCode"
                   className="block mb-1 font-medium text-sm"
                 >
                   Mã bảo vệ <span className="text-red-600">*</span>
                 </label>
                 <input
-                  id="passcode"
+                  id="accessCode"
                   type="password"
                   placeholder="Nhập mã bảo vệ"
                   className="px-2 border-2 border-amber-600 rounded-md outline-none w-full h-10"
-                  value={passcode}
-                  onChange={handlePasscodeChange}
+                  value={accessCode}
+                  onChange={handleAccessCodeChange}
                 />
               </div>
               <div className="flex items-end">
@@ -117,12 +115,12 @@ export default function PlanDetailsPage({}: PlanDetailsProps) {
               </div>
             </div>
           )}
-          {canView && (
+          {!isLoading && details.canView && (
             <>
               <div className="flex justify-between items-center">
                 <div>
                   <h4 className="font-bold text-amber-500 text-xl md:text-4xl">
-                    {details ? details["title"] : "Hành trình"}
+                    {details["title"]}
                   </h4>
                   <p className="text-gray-700 text-xs md:text-sm">
                     Hãy gởi bạn bè của bạn mã QR này để họ dễ dàng theo dõi lịch

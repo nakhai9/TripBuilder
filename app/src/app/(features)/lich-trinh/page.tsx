@@ -55,10 +55,12 @@ export default function TravelPlan() {
   const router = useRouter();
   const {
     selectedLocations,
-    updateSelectedLocations,
-    resetMap,
+    selectedLocationsToShare,
     isNewMap,
+    updateSelectedLocations,
     switchToMap,
+    resetSelectedLocations,
+    resetSelectedLocationsToShare,
   } = useVietnamMapStore();
   const { setIsLoading } = useGlobalStore();
   const { showError } = useToast();
@@ -67,7 +69,7 @@ export default function TravelPlan() {
 
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
-  const [passcode, setPasscode] = useState<string>("");
+  const [accessCode, setAccessCode] = useState<string>("");
 
   const navigateToPage = (url?: string) => {
     if (!url) return;
@@ -101,8 +103,8 @@ export default function TravelPlan() {
       setIsLoading(true);
       const data = await HttpClient.post<ResponseId>(API_URLS.plan, {
         ...plan,
-        password: passcode || undefined,
-        isPublic: !passcode.length && !isPrivate,
+        accessCode: accessCode || undefined,
+        isPublic: !accessCode.length && !isPrivate,
       });
       if (!data) return;
       navigateToPage(`/lich-trinh/${data.id}`);
@@ -111,7 +113,7 @@ export default function TravelPlan() {
     } finally {
       setIsLoading(false);
       initPlan();
-      resetMap();
+      resetSelectedLocations();
     }
   };
 
@@ -150,6 +152,16 @@ export default function TravelPlan() {
   useEffect(() => {
     if (!plan) {
       initPlan();
+    }
+    if (currentStep === 1 && !plan) {
+      // Trường hợp đi từ chia-se-hinh-anh sang lịch trình
+      // reset lại selected của lich trinh về rỗng => gán lại những địa điểm bên chia-se-hinh-anh sang selected của lich-trinh => sau đó reset selected của chia-se-hinh-anh đê không còn kẹt lại giá trị cũ
+      resetSelectedLocations();
+      selectedLocationsToShare
+        .filter((x) => x.status === "UPCOMING")
+        .map((x) => updateSelectedLocations(x));
+
+      resetSelectedLocationsToShare();
     }
     if (currentStep === 2) {
       fetchProvinces();
@@ -233,12 +245,12 @@ export default function TravelPlan() {
 
   const handleFirstStep = () => {
     if (isPrivate) {
-      if (!passcode.length) {
+      if (!accessCode.length) {
         showError("Bạn cần nhập mã bảo vệ khi chọn chế độ riêng tư");
         return;
       }
 
-      if (passcode.length < 6) {
+      if (accessCode.length < 6) {
         showError("Mã bảo vệ tối đa 6 kí tự");
         return;
       }
@@ -273,16 +285,16 @@ export default function TravelPlan() {
               />
               {isPrivate && (
                 <div>
-                  <label htmlFor="#passcode">
+                  <label htmlFor="#accessCode">
                     Mã bảo vệ <span className="text-red-600">*</span>
                   </label>
                   <input
-                    id="passcode"
+                    id="accessCode"
                     type="password"
                     className="px-2 border-2 border-amber-600 rounded-md outline-none w-full h-10"
-                    value={passcode || ""}
+                    value={accessCode || ""}
                     onChange={(e) =>
-                      setPasscode((e.target as HTMLInputElement)?.value)
+                      setAccessCode((e.target as HTMLInputElement)?.value)
                     }
                   />
                 </div>
@@ -342,7 +354,7 @@ export default function TravelPlan() {
         {currentStep === 3 && (
           <div>
             <h3 className="block mb-4 font-bold text-gray-700 text-xl md:text-4xl text-center word-wrap">
-              {plan?.title || "Hành trình"}
+              {plan?.title}
             </h3>
 
             {!!plan?.destinations.length && (

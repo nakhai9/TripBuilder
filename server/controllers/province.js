@@ -17,12 +17,18 @@ const get = async (req, res) => {
 
         res.status(201).json(Response({
             code: "success",
-            data: [...locations.map(x => ({ id: x._id, codeName: x.codeName, name: x.name, mergedInto: x.mergedInto, isMerged: x.isMerged }))],
+            data: sortByCodeNameAsc([...locations.map(x => ({ id: x._id, codeName: x.codeName, name: x.name, mergedInto: x.mergedInto, isMerged: x.isMerged }))]),
             message: ""
         }));
     } catch (error) {
         res.status(500).json({ message: "Lỗi hệ thống", error: error.message });
     }
+}
+
+function sortByCodeNameAsc(arr) {
+    return [...arr].sort((a, b) =>
+        a.codeName.localeCompare(b.codeName)
+    );
 }
 
 module.exports = { get }

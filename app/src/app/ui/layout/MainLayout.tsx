@@ -21,7 +21,8 @@ export default function MainLayout({
   const { isLoading, loadingMessage, setIsLoading } = useGlobalStore();
   const { message, isShow, type, hideToast } = useToast();
   const open = false;
-  const { switchToMap, isNewMap, selectedLocations } = useVietnamMapStore();
+  const { switchToMap, isNewMap, selectedLocationsToShare } =
+    useVietnamMapStore();
   const router = useRouter();
   const onSwitchToMap = () => {
     setIsLoading(true, "Đang nạp dữ liệu bản đồ");
@@ -31,7 +32,7 @@ export default function MainLayout({
   return (
     <div className="relative flex flex-col min-h-screen font-sans">
       <div className="top-0 left-0 z-50 fixed flex bg-white shadow-md w-full">
-        <div className="flex justify-center md:justify-between items-center gap-4 bg-white mx-auto px-4 md:px-0 w-full md:w-5xl h-14 cursor-pointer">
+        <div className="flex justify-center md:justify-between items-center gap-4 bg-white mx-auto px-4 md:px-0 w-full md:w-2xl lg:w-5xl h-14 cursor-pointer">
           <h1
             onClick={() => router.push("/")}
             className="block bg-amber-600 p-2 md:px-2 md:py-0 font-medium text-white text-xl md:text-3xl md:text-left text-center italic"
@@ -40,17 +41,17 @@ export default function MainLayout({
           </h1>
           {!hideButton && (
             <div className="flex gap-4">
-              {!selectedLocations.length && (
+              {!selectedLocationsToShare.length && (
                 <button
                   className={clsx(
                     "flex items-center gap-2 hover:bg-amber-50 px-4 border border-amber-600 rounded-md h-8 md:h-10 text-amber-600 text-xs md:text-sm icon",
-                    selectedLocations.length > 0
+                    selectedLocationsToShare.length > 0
                       ? "opacity-50 cursor-not-allowed"
                       : "cursor-pointer",
                   )}
                   type="button"
                   onClick={onSwitchToMap}
-                  disabled={selectedLocations.length > 0}
+                  disabled={selectedLocationsToShare.length > 0}
                 >
                   <Map className="w-4 md:w-5 h-4 md:h-5" />
                   <p>Xem bản đồ {isNewMap ? "mới" : "cũ"}</p>
@@ -60,7 +61,9 @@ export default function MainLayout({
           )}
         </div>
       </div>
-      <main className="mx-auto w-full md:w-5xl">{children}</main>
+      <main className="mx-auto w-full w-full md:w-2xl lg:w-5xl">
+        {children}
+      </main>
       {open && <Modal />}
       <Backdrop
         sx={{

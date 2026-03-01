@@ -1,5 +1,6 @@
-const Response = ({ code, data, message }) => {
+const Response = ({ success, message, data, code }) => {
     return {
+        success,
         code,
         data,
         message
