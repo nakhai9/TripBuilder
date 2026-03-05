@@ -4,6 +4,7 @@ import {
   ThreadsIcon,
   ThreadsShareButton,
 } from "react-share";
+import Input from "../ui/input";
 type SocialShareProps = {
   url: string;
 };
@@ -36,12 +37,12 @@ export default function SocialShare({
           Hoặc chép đường dẫn này gửi bất cứ ai cũng có thể xem hành trình của
           bạn
         </p>
-        <input
+        <Input
           type="text"
           value={url}
           readOnly
+          disabled
           className="p-2 border rounded-md w-full text-xs disabled"
-          disabled={true}
         />
       </div>
     </div>

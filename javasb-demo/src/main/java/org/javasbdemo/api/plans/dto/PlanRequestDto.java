@@ -10,7 +10,6 @@ import java.util.List;
 public class PlanRequestDto {
     private String title;
     private String description;
-    private List<Destination> destinations;
     private boolean isPublic;
     private String accessCode;
     private String userId;

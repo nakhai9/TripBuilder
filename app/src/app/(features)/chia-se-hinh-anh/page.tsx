@@ -7,6 +7,8 @@ import { LocationInfo } from "@/app/model";
 import { useGlobalStore, useToast } from "@/app/store/global-store";
 import { useVietnamMapStore } from "@/app/store/vietnam-map-store";
 import MainLayout from "@/app/ui/layout/MainLayout";
+import Button from "@/app/ui/button";
+import IconButton from "@/app/ui/icon-button";
 import { Dialog, Tooltip } from "@mui/material";
 import clsx from "clsx";
 import {
@@ -136,32 +138,31 @@ export default function ChiaSeHinhAnh() {
           {selectedLocationsToShare.filter((x) => x.status === "UPCOMING")
             .length > 0 && (
             <Tooltip title="Tạo lịch trình">
-              <button
+              <Button
                 onClick={() => navigateToPage("/lich-trinh")}
-                className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
+                leftIcon={<MapPinned className="w-4 md:w-5 h-4 md:h-5" />}
               >
-                <MapPinned className="w-4 md:w-5 h-4 md:h-5" /> Tạo lịch trình
-              </button>
+                Tạo lịch trình
+              </Button>
             </Tooltip>
           )}
           {selectedLocationsToShare.length > 0 && (
             <>
               <Tooltip title="Tạo hình ảnh để chia sẻ">
-                <button
+                <Button
                   onClick={onShareModal}
-                  className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
+                  leftIcon={<Share2 className="w-4 md:w-5 h-4 md:h-5" />}
                 >
-                  <Share2 className="w-4 md:w-5 h-4 md:h-5" /> Chia sẻ lên mạng
-                  xã hội
-                </button>
+                  Chia sẻ lên mạng xã hội
+                </Button>
               </Tooltip>
               <Tooltip title="Khôi phục">
-                <button
+                <Button
+                  variant="outline"
                   onClick={resetSelectedLocationsToShare}
-                  className="flex items-center gap-2 bg-white hover:bg-amber-50 px-4 border border-amber-500 rounded-md h-8 md:h-10 text-amber-500 hover:text-amber-600 text-xs md:text-sm cursor-pointer icon"
-                >
-                  <RotateCw className="w-4 md:w-5 h-4 md:h-5" />
-                </button>
+                  className="icon"
+                  leftIcon={<RotateCw className="w-4 md:w-5 h-4 md:h-5" />}
+                />
               </Tooltip>
             </>
           )}
@@ -176,12 +177,12 @@ export default function ChiaSeHinhAnh() {
           <h3 className="font-medium md:text-lg">
             {modalName === "mark-modal" ? "Địa điểm" : "Chia sẻ hành trình"}
           </h3>
-          <button
-            className="text-gray-700 cursor-pointer"
+          <IconButton
+            className="text-gray-700"
             onClick={() => setOpen(false)}
           >
             <X />
-          </button>
+          </IconButton>
         </div>
         <div className="p-5 min-w-56">
           {modalName === "mark-modal" && (

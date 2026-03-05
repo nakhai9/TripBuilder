@@ -8,6 +8,8 @@ import { API_URLS } from "@/app/libs/api/api.constant";
 import { HttpClient } from "@/app/libs/api/axios";
 import { PlanDetails } from "@/app/model";
 import DestinationItem from "@/app/components/Destination";
+import Button from "@/app/ui/button";
+import Input from "@/app/ui/input";
 import { Info } from "lucide-react";
 type PlanDetailsProps = {};
 export default function PlanDetailsPage({}: PlanDetailsProps) {
@@ -88,30 +90,19 @@ export default function PlanDetailsPage({}: PlanDetailsProps) {
           {!details.canView && (
             <div className="flex flex-col items-center gap-2 md:mx-auto w-full md:w-90">
               <p className="font-medium text-lg">Đây là lịch trình riêng tư</p>
-              <div className="w-full">
-                <label
-                  htmlFor="#accessCode"
-                  className="block mb-1 font-medium text-sm"
-                >
-                  Mã bảo vệ <span className="text-red-600">*</span>
-                </label>
-                <input
-                  id="accessCode"
-                  type="password"
-                  placeholder="Nhập mã bảo vệ"
-                  className="px-2 border-2 border-amber-600 rounded-md outline-none w-full h-10"
-                  value={accessCode}
-                  onChange={handleAccessCodeChange}
-                />
-              </div>
+              <Input
+                id="accessCode"
+                type="password"
+                label="Mã bảo vệ"
+                required
+                placeholder="Nhập mã bảo vệ"
+                value={accessCode}
+                onChange={handleAccessCodeChange}
+              />
               <div className="flex items-end">
-                <button
-                  type="button"
-                  onClick={onSubmit}
-                  className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
-                >
+                <Button type="button" onClick={onSubmit}>
                   Xem chi tiết
-                </button>
+                </Button>
               </div>
             </div>
           )}

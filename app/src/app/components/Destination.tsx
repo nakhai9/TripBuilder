@@ -1,9 +1,20 @@
 "use client";
 
 import clsx from "clsx";
-import { CirclePlus, MapPin, Pencil, Trash, Trash2, X } from "lucide-react";
+import {
+  CirclePlus,
+  MapPin,
+  MapPinned,
+  Pencil,
+  Trash,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { useToast } from "../store/global-store";
+import Button from "../ui/button";
+import Input from "../ui/input";
+import IconButton from "../ui/icon-button";
 
 export type Destination = {
   id?: string;
@@ -81,7 +92,7 @@ export default function DestinationItem({
         )}
       >
         <div className="flex justify-center items-center">
-          <MapPin className="w-4 md:w-5 h-4 md:h-5 text-white" />
+          <MapPin className="mr-2 w-4 md:w-5 h-4 md:h-5 text-white" />
           <div className="flex items-center gap-1 font-medium text-white text-sm md:text-xl">
             <p>
               {destination.name}
@@ -90,7 +101,7 @@ export default function DestinationItem({
               )}
             </p>
           </div>
-          <select
+          {/* <select
             onChange={(e) => handleSelectChange(e)}
             defaultValue={destination.day}
             disabled={readonly}
@@ -101,48 +112,41 @@ export default function DestinationItem({
                 Ngày {opt}
               </option>
             ))}
-          </select>
+          </select> */}
         </div>
         <div className="flex gap-1 item-centers">
-          <button
-            className={clsx(
-              "bg-red-50 p-1 rounded-full cursor-pointer",
-              readonly && "hidden",
-            )}
+          <IconButton
+            className={clsx("bg-red-50", readonly && "hidden")}
             type="button"
             onClick={handleDelete}
           >
             <Trash2 className="w-4 md:w-5 h-4 md:h-5 text-red-600" />
-          </button>
-          <button
+          </IconButton>
+          <IconButton
             className={clsx(
-              "hidden bg-slate-50 p-1 rounded-full text-amber-600 cursor-pointer",
+              "hidden bg-slate-50 text-amber-600",
               readonly && "hidden",
             )}
             type="button"
             onClick={handleEdit}
           >
             <Pencil className="w-4 md:w-5 h-4 md:h-5" />
-          </button>
+          </IconButton>
         </div>
       </div>
       <div className="p-3">
         {!readonly && (
           <div className="flex gap-2">
-            <input
+            <Input
               type="text"
               placeholder="Thêm hoạt động, điểm tham quan"
-              className="px-3 border border-slate-300 rounded-md w-full h-8 md:h-10 text-xs md:text-sm"
+              className="h-8 md:h-10 text-xs md:text-sm"
               value={activity}
               onChange={handleInputChange}
             />
-            <button
-              type="button"
-              onClick={handleAddActivity}
-              className="cursor-pointer"
-            >
+            <IconButton type="button" onClick={handleAddActivity}>
               <CirclePlus className="w-4 md:w-5 h-4 md:h-5" />
-            </button>
+            </IconButton>
           </div>
         )}
         <div className="mt-2 max-h-[300px] overflow-y-auto">
@@ -160,7 +164,7 @@ export default function DestinationItem({
                     >
                       <div className="flex items-center gap-1 w-full">
                         <p>{a}</p>
-                        <button
+                        <IconButton
                           type="button"
                           onClick={() => handleDeleteActivities(a)}
                           className={clsx(
@@ -168,8 +172,18 @@ export default function DestinationItem({
                             readonly && "hidden",
                           )}
                         >
-                          <X className="w-3 h-3 font-bold text-red-500" />
-                        </button>
+                          <X className="w-4 h-4 font-bold text-red-500" />
+                        </IconButton>
+                        <IconButton
+                          type="button"
+                          onClick={() => handleDeleteActivities(a)}
+                          className={clsx(
+                            "flex items-center",
+                            readonly && "hidden",
+                          )}
+                        >
+                          <MapPinned className="w-4 h-4 font-bold text-red-500" />
+                        </IconButton>
                       </div>
                     </li>
                   );

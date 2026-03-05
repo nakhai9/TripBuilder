@@ -8,6 +8,8 @@ import clsx from "clsx";
 import { Map, MapPinned } from "lucide-react";
 import Toast from "../toast";
 import { useRouter } from "next/navigation";
+import Button from "../button";
+import { STYLES } from "../theme/colors";
 
 type MainLayoutProps = {
   children: React.ReactNode;
@@ -32,30 +34,31 @@ export default function MainLayout({
   return (
     <div className="relative flex flex-col min-h-screen font-sans">
       <div className="top-0 left-0 z-50 fixed flex bg-white shadow-md w-full">
-        <div className="flex justify-center md:justify-between items-center gap-4 bg-white mx-auto px-4 md:px-0 w-full md:w-2xl lg:w-5xl h-14 cursor-pointer">
+        <div className="flex justify-center md:justify-between items-center gap-4 bg-white mx-auto px-4 md:px-0 w-full md:w-2xl lg:w-5xl h-14">
           <h1
             onClick={() => router.push("/")}
-            className="block bg-amber-600 p-2 md:px-2 md:py-0 font-medium text-white text-xl md:text-3xl md:text-left text-center italic"
+            className="block app-bg-primary p-2 md:px-2 md:py-0 font-medium app-text-white text-xl md:text-3xl md:text-left text-center italic cursor-pointer"
           >
             AroundVietnam
           </h1>
           {!hideButton && (
             <div className="flex gap-4">
               {!selectedLocationsToShare.length && (
-                <button
-                  className={clsx(
-                    "flex items-center gap-2 hover:bg-amber-50 px-4 border border-amber-600 rounded-md h-8 md:h-10 text-amber-600 text-xs md:text-sm icon",
-                    selectedLocationsToShare.length > 0
-                      ? "opacity-50 cursor-not-allowed"
-                      : "cursor-pointer",
-                  )}
+                <Button
+                  variant="outline"
                   type="button"
                   onClick={onSwitchToMap}
                   disabled={selectedLocationsToShare.length > 0}
+                  className={clsx(
+                    "icon",
+                    selectedLocationsToShare.length > 0
+                      ? "opacity-50 cursor-not-allowed"
+                      : "",
+                  )}
+                  leftIcon={<Map className="w-4 md:w-5 h-4 md:h-5" />}
                 >
-                  <Map className="w-4 md:w-5 h-4 md:h-5" />
-                  <p>Xem bản đồ {isNewMap ? "mới" : "cũ"}</p>
-                </button>
+                  <p>Bản đồ {isNewMap ? "mới" : "cũ"}</p>
+                </Button>
               )}
             </div>
           )}

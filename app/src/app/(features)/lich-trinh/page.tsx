@@ -38,6 +38,8 @@ import { Utils } from "@/app/libs/utils";
 import clsx from "clsx";
 import DestinationItem, { Destination } from "@/app/components/Destination";
 import { ResponseId } from "@/app/libs/api/api.models";
+import Button from "@/app/ui/button";
+import Input from "@/app/ui/input";
 
 type Schedule = {
   day: number;
@@ -240,6 +242,9 @@ export default function TravelPlan() {
   };
 
   const handleSetPrivate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.checked) {
+      setAccessCode("");
+    }
     setIsPrivate(event.target.checked);
   };
 
@@ -269,29 +274,30 @@ export default function TravelPlan() {
                 <label htmlFor="" className="block mb-2 text-xl text-center">
                   Hãy đặt tên cho lịch trình của bạn
                 </label>
-                <input
+                <Input
                   type="text"
                   placeholder="Đặt tên cho lịch trình của bạn"
-                  className="px-2 border-2 border-amber-600 rounded-md outline-none w-full h-10"
                   onChange={(e) => onNamePlanChange(e)}
                   value={plan?.title || ""}
                 />
               </div>
               <FormControlLabel
                 control={
-                  <Checkbox checked={isPrivate} onChange={handleSetPrivate} />
+                  <Checkbox
+                    color="warning"
+                    checked={isPrivate}
+                    onChange={handleSetPrivate}
+                  />
                 }
                 label="Chế độ riêng tư"
               />
               {isPrivate && (
                 <div>
-                  <label htmlFor="#accessCode">
-                    Mã bảo vệ <span className="text-red-600">*</span>
-                  </label>
-                  <input
+                  <Input
                     id="accessCode"
                     type="password"
-                    className="px-2 border-2 border-amber-600 rounded-md outline-none w-full h-10"
+                    label="Mã bảo vệ"
+                    required
                     value={accessCode || ""}
                     onChange={(e) =>
                       setAccessCode((e.target as HTMLInputElement)?.value)
@@ -301,13 +307,9 @@ export default function TravelPlan() {
               )}
               <div className="flex justify-end mt-2">
                 {currentStep === 1 && plan?.title && (
-                  <button
-                    type="button"
-                    onClick={handleFirstStep}
-                    className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
-                  >
+                  <Button type="button" onClick={handleFirstStep}>
                     Tiếp theo
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
@@ -360,14 +362,15 @@ export default function TravelPlan() {
             {!!plan?.destinations.length && (
               <div className="flex justify-center items-center">
                 <Tooltip title="Hỏi AI">
-                  <button
+                  <Button
                     type="button"
-                    className="flex items-center gap-1 px-4 border border-amber-600 rounded-md h-8 md:h-10 text-amber-600 text-xs md:text-sm cursor-pointer"
+                    variant="outline"
+                    className="gap-1"
                     onClick={askGeminiToCreatePlan}
+                    leftIcon={<Lightbulb className="w-3 md:w-4 h-3 md:h-4" />}
                   >
-                    <Lightbulb className="w-3 md:w-4 h-3 md:h-4" />
                     Gợi ý bởi Google Gemini
-                  </button>
+                  </Button>
                 </Tooltip>
               </div>
             )}
@@ -386,21 +389,13 @@ export default function TravelPlan() {
 
             {!!plan?.destinations.length && (
               <div className="flex justify-between my-3">
-                <button
-                  type="button"
-                  onClick={() => handleNextStep(2)}
-                  className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
-                >
+                <Button type="button" onClick={() => handleNextStep(2)}>
                   Quay lại
-                </button>
+                </Button>
                 <Tooltip title="Tạo lịch trình">
-                  <button
-                    type="button"
-                    onClick={onSave}
-                    className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
-                  >
+                  <Button type="button" onClick={onSave}>
                     Tạo lịch trình
-                  </button>
+                  </Button>
                 </Tooltip>
               </div>
             )}
@@ -410,33 +405,21 @@ export default function TravelPlan() {
         <div className={clsx("flex justify-between items-center mt-2 actions")}>
           {currentStep === 2 && plan?.title && (
             <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => handleNextStep(1)}
-                className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
-              >
+              <Button type="button" onClick={() => handleNextStep(1)}>
                 Quay lại
-              </button>
+              </Button>
               {!selectedLocations.length && (
-                <button
-                  type="button"
-                  onClick={switchToMap}
-                  className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
-                >
+                <Button type="button" onClick={switchToMap}>
                   Danh sách {isNewMap ? 64 : 34} tỉnh/thành phố
-                </button>
+                </Button>
               )}
             </div>
           )}
 
           {currentStep === 2 && !!selectedLocations.length && plan?.title && (
-            <button
-              type="button"
-              onClick={() => handleNextStep(3)}
-              className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-4 rounded-md h-8 md:h-10 text-white text-xs md:text-sm cursor-pointer"
-            >
+            <Button type="button" onClick={() => handleNextStep(3)}>
               Tiếp theo
-            </button>
+            </Button>
           )}
         </div>
       </div>
