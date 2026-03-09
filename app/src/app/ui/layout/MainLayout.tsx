@@ -9,7 +9,6 @@ import { Map, MapPinned } from "lucide-react";
 import Toast from "../toast";
 import { useRouter } from "next/navigation";
 import Button from "../button";
-import { STYLES } from "../theme/colors";
 
 type MainLayoutProps = {
   children: React.ReactNode;
