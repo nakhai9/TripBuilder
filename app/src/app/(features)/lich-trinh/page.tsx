@@ -268,50 +268,50 @@ export default function TravelPlan() {
     <MainLayout hideButton>
       <div className="mt-20 md:p-0 px-4">
         {currentStep === 1 && (
-          <div className="flex flex-col gap-4 mx-auto p-4 md:p-0 w-full md:w-90">
-            <div className="flex flex-col gap-2">
+          <div className="shadow-2xl mx-auto p-4 border border-slate-200 rounded-md w-full md:w-90">
+            <div>
+              <label htmlFor="" className="block mb-2 text-xl text-center">
+                Lịch trình của bạn
+              </label>
+              <Input
+                type="text"
+                placeholder="Đặt tên cho lịch trình của bạn"
+                label="Lịch trình"
+                required
+                onChange={(e) => onNamePlanChange(e)}
+                value={plan?.title || ""}
+              />
+            </div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="warning"
+                  checked={isPrivate}
+                  onChange={handleSetPrivate}
+                />
+              }
+              label="Chế độ riêng tư"
+            />
+            {isPrivate && (
               <div>
-                <label htmlFor="" className="block mb-2 text-xl text-center">
-                  Hãy đặt tên cho lịch trình của bạn
-                </label>
                 <Input
-                  type="text"
-                  placeholder="Đặt tên cho lịch trình của bạn"
-                  onChange={(e) => onNamePlanChange(e)}
-                  value={plan?.title || ""}
+                  id="accessCode"
+                  type="password"
+                  label="Mã bảo vệ"
+                  required
+                  value={accessCode || ""}
+                  onChange={(e) =>
+                    setAccessCode((e.target as HTMLInputElement)?.value)
+                  }
                 />
               </div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    color="warning"
-                    checked={isPrivate}
-                    onChange={handleSetPrivate}
-                  />
-                }
-                label="Chế độ riêng tư"
-              />
-              {isPrivate && (
-                <div>
-                  <Input
-                    id="accessCode"
-                    type="password"
-                    label="Mã bảo vệ"
-                    required
-                    value={accessCode || ""}
-                    onChange={(e) =>
-                      setAccessCode((e.target as HTMLInputElement)?.value)
-                    }
-                  />
-                </div>
+            )}
+            <div className="flex justify-end mt-2">
+              {currentStep === 1 && plan?.title && (
+                <Button type="button" onClick={handleFirstStep}>
+                  Tiếp theo
+                </Button>
               )}
-              <div className="flex justify-end mt-2">
-                {currentStep === 1 && plan?.title && (
-                  <Button type="button" onClick={handleFirstStep}>
-                    Tiếp theo
-                  </Button>
-                )}
-              </div>
             </div>
           </div>
         )}

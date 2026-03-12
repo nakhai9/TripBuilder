@@ -101,7 +101,7 @@ export default function DestinationItem({
               )}
             </p>
           </div>
-          {/* <select
+          <select
             onChange={(e) => handleSelectChange(e)}
             defaultValue={destination.day}
             disabled={readonly}
@@ -112,7 +112,7 @@ export default function DestinationItem({
                 Ngày {opt}
               </option>
             ))}
-          </select> */}
+          </select>
         </div>
         <div className="flex gap-1 item-centers">
           <IconButton
