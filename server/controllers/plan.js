@@ -20,8 +20,6 @@ const create = async (req, res) => {
             userId: payload.userId ? payload.userId : GUEST_USER_ID
         });
 
-        console.log(plan.accessCode)
-
         res.status(201).json(Response({
             code: "success",
             data: {
