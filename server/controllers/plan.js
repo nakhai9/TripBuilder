@@ -1,6 +1,7 @@
 const { GUEST_USER_ID } = require("../common/constants");
 const Response = require("../utils/handleError");
 const PlanSchema = require("./../models/plan")
+const bcrypt = require('bcrypt');
 const create = async (req, res) => {
     try {
 
@@ -10,10 +11,16 @@ const create = async (req, res) => {
             payload.title = "Lịch trình chưa đặt tên"
         }
 
+        if (payload.accessCode) {
+            payload.accessCode = await bcrypt.hashSync(payload.accessCode, 10);
+        }
+
         const plan = await PlanSchema.create({
             ...payload,
             userId: payload.userId ? payload.userId : GUEST_USER_ID
         });
+
+        console.log(plan.accessCode)
 
         res.status(201).json(Response({
             code: "success",
@@ -64,7 +71,9 @@ const get = async (req, res) => {
             });
         }
 
-        if (planAccessCode !== accessCode) {
+        const isMatch = await bcrypt.compare(accessCode, planAccessCode);
+
+        if (!isMatch) {
             return res.status(403).json({
                 success: false,
                 data: { canView: false },
