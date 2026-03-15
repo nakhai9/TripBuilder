@@ -16,7 +16,17 @@ const PlanSchema = new mongoose.Schema({
         type: [
             {
                 codeName: String,
-                activities: [String],
+                activities: {
+                    type: [
+                        {
+                            name: String,
+                            address: {
+                                type: String,
+                                default: null
+                            }
+                        }
+                    ]
+                },
                 day: Number,
                 name: String
             }
