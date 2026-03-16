@@ -1,7 +1,7 @@
 const { GUEST_USER_ID } = require("../common/constants");
 const Response = require("../utils/handleError");
 const PlanSchema = require("./../models/plan")
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const create = async (req, res) => {
     try {
 
