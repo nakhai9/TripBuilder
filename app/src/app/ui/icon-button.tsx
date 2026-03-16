@@ -17,8 +17,8 @@ export default function IconButton({
       type={type}
       {...rest}
       className={clsx(
-        "flex items-center justify-center rounded-full p-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
-        active ? "bg-amber-50 text-amber-600" : "bg-slate-50",
+        "flex justify-center items-center disabled:opacity-50 p-1 rounded-full cursor-pointer disabled:cursor-not-allowed",
+        active ? "bg-amber-50 text-amber-600" : "",
         className,
       )}
     >
@@ -26,4 +26,3 @@ export default function IconButton({
     </button>
   );
 }
-

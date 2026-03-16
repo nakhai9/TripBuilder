@@ -10,7 +10,8 @@ import { PlanDetails } from "@/app/model";
 import DestinationItem from "@/app/components/Destination";
 import Button from "@/app/ui/button";
 import Input from "@/app/ui/input";
-import { Info } from "lucide-react";
+import { Info, Pencil } from "lucide-react";
+import IconButton from "@/app/ui/icon-button";
 type PlanDetailsProps = {};
 export default function PlanDetailsPage({}: PlanDetailsProps) {
   const params = useParams();
@@ -89,7 +90,16 @@ export default function PlanDetailsPage({}: PlanDetailsProps) {
         <div className="mt-10 mt-20 md:p-0 px-4">
           {!details.canView && (
             <div className="flex flex-col items-center gap-2 md:mx-auto w-full md:w-90">
-              <p className="font-medium text-lg">Đây là lịch trình riêng tư</p>
+              {qrCodeUrl && (
+                <img
+                  src={qrCodeUrl}
+                  alt="qr"
+                  className="w-16 md:w-40 h-16 md:h-40"
+                />
+              )}
+              <p className="font-medium text-red-600">
+                Đây là lịch trình riêng tư
+              </p>
               <Input
                 id="accessCode"
                 type="password"
@@ -108,23 +118,10 @@ export default function PlanDetailsPage({}: PlanDetailsProps) {
           )}
           {!isLoading && details.canView && (
             <>
-              <div className="flex justify-between items-center">
-                <div>
-                  <h4 className="font-bold text-amber-500 text-xl md:text-4xl">
-                    {details["title"]}
-                  </h4>
-                  <p className="text-gray-700 text-xs md:text-sm">
-                    Hãy gởi bạn bè của bạn mã QR này để họ dễ dàng theo dõi lịch
-                    trình
-                  </p>
-                </div>
-                {qrCodeUrl && (
-                  <img
-                    src={qrCodeUrl}
-                    alt="qr"
-                    className="w-16 w-16 md:w-30 md:h-30"
-                  />
-                )}
+              <div className="flex justify-center items-center gap-2">
+                <h4 className="py-4 font-bold text-amber-500 text-xl md:text-4xl">
+                  {details["title"]}
+                </h4>
               </div>
 
               <div className="gap-2 grid md:grid-cols-3 mt-3">

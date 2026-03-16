@@ -4,6 +4,7 @@ import clsx from "clsx";
 import {
   CirclePlus,
   LandPlot,
+  Map,
   MapPin,
   MapPinned,
   Navigation,
@@ -16,6 +17,7 @@ import { useState } from "react";
 import { useToast } from "../store/global-store";
 import Input from "../ui/input";
 import IconButton from "../ui/icon-button";
+import { Dialog } from "@mui/material";
 
 export type Destination = {
   id?: string;
@@ -44,6 +46,7 @@ export default function DestinationItem({
   onEdit,
 }: DestinationItemProps) {
   const [activity, setActivity] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false);
 
   const { showError } = useToast();
 
@@ -94,20 +97,17 @@ export default function DestinationItem({
     });
   };
 
-  const getCoordinates = async (address: string) => {
-    if (!address) return;
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent("Đền thờ Vua Hùng Cần Thơ")}`;
+  const openMap = (address: string) => {
+    const googleMapSearchUrl =
+      process.env.NEXT_PUBLIC_GOOGLE_MAPS_SEARCH_URL || "";
+    if (!googleMapSearchUrl) return;
+    if (!address) {
+      showError("Địa chỉ không tồn tại hoặc đang trống");
+      return;
+    }
+    const url = `${googleMapSearchUrl}${encodeURIComponent(address)}`;
 
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent": "my-travel-app",
-        "Accept-Language": "*",
-      },
-    });
-
-    const data = await response.json();
-
-    console.log(data);
+    window.open(url, "_blank");
   };
 
   return (
@@ -201,12 +201,28 @@ export default function DestinationItem({
                         <X className="w-4 h-4 font-bold text-red-500" />
                       </IconButton>
                     </div>
-                    <div
+                    {/* <div
                       className="flex items-center gap-1 font-normal text-xs"
                       onClick={() => getCoordinates(a.address ?? "")}
                     >
                       <Navigation size={14} className="shrink-0" />
                       <span className="truncate">{a.address}</span>
+                    </div> */}
+                    <div className="flex justify-start items-center gap-2">
+                      {/* <Navigation
+                        size={14}
+                        className="cursor-pointer shrink-0"
+                        onClick={() => setOpen(true)}
+                      /> */}
+                      <p
+                        className="flex items-center gap-1 text-blue-500 text-xs cursor-pointer"
+                        onClick={() =>
+                          openMap(a.address ? `${a.name} ${a.address}` : "")
+                        }
+                      >
+                        <Map size={14} />
+                        Mở trong map
+                      </p>
                     </div>
 
                     {/* <IconButton
@@ -230,6 +246,16 @@ export default function DestinationItem({
           )}
         </div>
       </div>
+
+      <Dialog open={open} keepMounted>
+        <div className="flex justify-between items-center p-5 dialog-header">
+          <h3 className="font-medium md:text-lg">Bản đồ</h3>
+          <IconButton className="text-gray-700" onClick={() => setOpen(false)}>
+            <X />
+          </IconButton>
+        </div>
+        <div className="p-5 min-w-56"></div>
+      </Dialog>
     </div>
   );
 }
