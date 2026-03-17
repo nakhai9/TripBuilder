@@ -10,6 +10,7 @@ const planRouter = require("./routes/plan");
 const provinceRouter = require("./routes/province")
 const svgVectorMapRouter = require("./routes/svgVectorMap");
 const planImageRouter = require("./routes/planImage");
+const checkHealthRouter = require("./routes/health");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.get("/api/hello", (req, res) => {
     res.json({ message: "Hello World" });
 });
 
+app.use("/health", checkHealthRouter)
 app.use("/api/upload/", uploadRouter);
 app.use("/api/plans", planRouter);
 app.use('/api/provinces', provinceRouter)
