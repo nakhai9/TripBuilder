@@ -10,7 +10,7 @@ import { PlanDetails } from "@/app/model";
 import DestinationItem from "@/app/components/Destination";
 import Button from "@/app/ui/button";
 import Input from "@/app/ui/input";
-import { Info, Pencil } from "lucide-react";
+import { Info, Pencil, X } from "lucide-react";
 import IconButton from "@/app/ui/icon-button";
 type PlanDetailsProps = {};
 export default function PlanDetailsPage({}: PlanDetailsProps) {
@@ -124,7 +124,7 @@ export default function PlanDetailsPage({}: PlanDetailsProps) {
                 </h4>
               </div>
 
-              <div className="gap-2 grid md:grid-cols-3 mt-3">
+              <div className="gap-2 grid md:grid-cols-2 lg:grid-cols-3 mt-3">
                 {(details?.destinations ?? []).map((destination) => (
                   <DestinationItem
                     key={destination.codeName}
