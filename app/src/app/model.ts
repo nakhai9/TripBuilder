@@ -1,4 +1,4 @@
-import type { TBDestination } from "./components/TBDestinationCard";
+import { ItineraryLocation } from "./components/Itinerary/TbItineraryLocation";
 
 export type LocationInfo = {
   name: string;
@@ -23,7 +23,7 @@ export type Province = {
 
 export type PlanDetails = {
   id?: string;
-  destinations: TBDestination[];
+  destinations: ItineraryLocation[];
   title: string;
   startAt: string;
   description?: string;
